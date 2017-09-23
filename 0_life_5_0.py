@@ -7,10 +7,11 @@
 # 3.0 (2017 - use signal flag to stop, many comments with old code)
 # 3.5 (2017 – erase all time, after_cancel improve speed, pep-8)
 # 4.0 (2017 – 4 px. very slow with fill pixels, after 200 epochs)
-# 4.5 (2017 – 1 px. Improve painting and syntax, slow with 600 pixels)
+# 4.5 (2017 – 1 px. improve painting and syntax, slow with 600 pixels)
 # 5.0 (2017 – 1 px, virtual matrix, slow 900 pix, del self.cell size)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame)
 
 import math
 from concurrent.futures import ThreadPoolExecutor
@@ -342,86 +343,53 @@ class Main(object):
         xcell = int(event.y)
         ycell = int(event.x)
 
-        self.black_cell(xcell, ycell)
-        self.black_cell(xcell - 1, ycell)
-        self.black_cell(xcell - 2, ycell - 1)
-        self.black_cell(xcell - 2, ycell + 1)
-        self.black_cell(xcell - 3, ycell)
-        self.black_cell(xcell - 4, ycell)
-        self.black_cell(xcell - 5, ycell)
-        self.black_cell(xcell - 6, ycell)
-        self.black_cell(xcell - 7, ycell - 1)
-        self.black_cell(xcell - 7, ycell + 1)
-        self.black_cell(xcell - 8, ycell)
-        self.black_cell(xcell - 9, ycell)
+        pack = [(xcell, ycell), (xcell - 1, ycell), (xcell - 2, ycell - 1),
+                (xcell - 2, ycell + 1), (xcell - 3, ycell),
+                (xcell - 4, ycell), (xcell - 5, ycell), (xcell - 6, ycell),
+                (xcell - 7, ycell - 1), (xcell - 7, ycell + 1),
+                (xcell - 8, ycell), (xcell - 9, ycell)]
+        for i in pack:
+            self.black_cell(i[0], i[1])
 
     def fig_4(self, event):
         xcell = int(event.y)
         ycell = int(event.x)
-
-        self.black_cell(xcell, ycell)
-        self.black_cell(xcell - 1, ycell)
-        self.black_cell(xcell - 2, ycell)
-        self.black_cell(xcell - 2, ycell - 1)
-        self.black_cell(xcell - 4, ycell)
-        self.black_cell(xcell - 4, ycell - 2)
-        self.black_cell(xcell - 4, ycell - 3)
-        self.black_cell(xcell - 4, ycell - 4)
-        self.black_cell(xcell - 3, ycell - 4)
-        self.black_cell(xcell - 1, ycell - 3)
-        self.black_cell(xcell - 1, ycell - 2)
-        self.black_cell(xcell, ycell - 2)
-        self.black_cell(xcell, ycell - 4)
+        pack = [(xcell, ycell), (xcell - 1, ycell), (xcell - 2, ycell),
+                (xcell - 2, ycell - 1), (xcell - 4, ycell),
+                (xcell - 4, ycell - 2), (xcell - 4, ycell - 3),
+                (xcell - 4, ycell - 4), (xcell - 3, ycell - 4),
+                (xcell - 1, ycell - 3), (xcell - 1, ycell - 2),
+                (xcell, ycell - 2), (xcell, ycell - 4)]
+        for i in pack:
+            self.black_cell(i[0], i[1])
 
     def ship_3(self, event):
         xcell = int(event.y)
         ycell = int(event.x)
-
-        self.black_cell(xcell, ycell)
-        self.black_cell(xcell - 1, ycell)
-        self.black_cell(xcell - 1, ycell + 1)
-        self.black_cell(xcell - 2, ycell)
-        self.black_cell(xcell - 2, ycell + 2)
-        self.black_cell(xcell - 3, ycell + 2)
-        self.black_cell(xcell - 4, ycell + 2)
-        self.black_cell(xcell - 3, ycell + 3)
-        self.black_cell(xcell - 6, ycell + 1)
-        self.black_cell(xcell - 7, ycell)
-        self.black_cell(xcell - 9, ycell)
-        self.black_cell(xcell - 9, ycell + 1)
-        self.black_cell(xcell - 10, ycell + 1)
-        self.black_cell(xcell - 10, ycell + 2)
-        self.black_cell(xcell - 11, ycell + 3)
-        self.black_cell(xcell - 13, ycell + 3)
-        self.black_cell(xcell - 14, ycell + 3)
-        self.black_cell(xcell - 14, ycell + 1)
-        self.black_cell(xcell - 15, ycell)
-        self.black_cell(xcell - 16, ycell)
-        self.black_cell(xcell - 17, ycell + 1)
-        self.black_cell(xcell - 17, ycell + 2)
-
-        self.black_cell(xcell, ycell - 1)
-        self.black_cell(xcell - 1, ycell - 1)
-        self.black_cell(xcell - 1, ycell - 2)
-        self.black_cell(xcell - 2, ycell - 1)
-        self.black_cell(xcell - 2, ycell - 3)
-        self.black_cell(xcell - 3, ycell - 3)
-        self.black_cell(xcell - 3, ycell - 4)
-        self.black_cell(xcell - 4, ycell - 3)
-        self.black_cell(xcell - 6, ycell - 2)
-        self.black_cell(xcell - 7, ycell - 1)
-        self.black_cell(xcell - 9, ycell - 1)
-        self.black_cell(xcell - 9, ycell - 2)
-        self.black_cell(xcell - 10, ycell - 2)
-        self.black_cell(xcell - 10, ycell - 3)
-        self.black_cell(xcell - 11, ycell - 4)
-        self.black_cell(xcell - 13, ycell - 4)
-        self.black_cell(xcell - 14, ycell - 4)
-        self.black_cell(xcell - 14, ycell - 2)
-        self.black_cell(xcell - 15, ycell - 1)
-        self.black_cell(xcell - 16, ycell - 1)
-        self.black_cell(xcell - 17, ycell - 2)
-        self.black_cell(xcell - 17, ycell - 3)
+        pack = [(xcell, ycell), (xcell - 1, ycell), (xcell - 1, ycell + 1),
+                (xcell - 2, ycell), (xcell - 2, ycell + 2),
+                (xcell - 3, ycell + 2), (xcell - 4, ycell + 2),
+                (xcell - 3, ycell + 3), (xcell - 6, ycell + 1),
+                (xcell - 7, ycell), (xcell - 9, ycell),
+                (xcell - 9, ycell + 1), (xcell - 10, ycell + 1),
+                (xcell - 10, ycell + 2), (xcell - 11, ycell + 3),
+                (xcell - 13, ycell + 3), (xcell - 14, ycell + 3),
+                (xcell - 14, ycell + 1), (xcell - 15, ycell),
+                (xcell - 16, ycell), (xcell - 17, ycell + 1),
+                (xcell - 17, ycell + 2), (xcell, ycell - 1),
+                (xcell - 1, ycell - 1), (xcell - 1, ycell - 2),
+                (xcell - 2, ycell - 1), (xcell - 2, ycell - 3),
+                (xcell - 3, ycell - 3), (xcell - 3, ycell - 4),
+                (xcell - 4, ycell - 3), (xcell - 6, ycell - 2),
+                (xcell - 7, ycell - 1), (xcell - 9, ycell - 1),
+                (xcell - 9, ycell - 2), (xcell - 10, ycell - 2),
+                (xcell - 10, ycell - 3), (xcell - 11, ycell - 4),
+                (xcell - 13, ycell - 4), (xcell - 14, ycell - 4),
+                (xcell - 14, ycell - 2), (xcell - 15, ycell - 1),
+                (xcell - 16, ycell - 1), (xcell - 17, ycell - 2),
+                (xcell - 17, ycell - 3)]
+        for i in pack:
+            self.black_cell(i[0], i[1])
 
     def black_cell(self, y, x):
 
