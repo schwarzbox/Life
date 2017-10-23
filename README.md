@@ -26,7 +26,7 @@ Conway's Game of Life
 
 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
-![Screenshot](screenshot/screenshot1.png)
-![Screenshot](screenshot/screenshot2.png)
-![Screenshot](screenshot/screenshot3.png)
+![Screenshot](screenshot/screenshot1.jpg)
+![Screenshot](screenshot/screenshot2.jpg)
+![Screenshot](screenshot/screenshot3.jpg)
 
