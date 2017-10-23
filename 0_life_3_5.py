@@ -16,10 +16,9 @@
 # 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
-import platform
-from os import getpid, system
-from tkinter import (BOTH, BOTTOM, Button, CENTER, Canvas, CURRENT, Frame,
-                     LEFT, Label, PhotoImage, RIGHT, S, SE, TOP, Tk,
+
+from tkinter import (BOTH, BOTTOM, Button, CENTER, Canvas, Frame, LEFT, Label,
+                     NW, PhotoImage, RIGHT, S, SE, TOP, Tk,
                      Toplevel, X, Y, YES)
 
 
@@ -57,20 +56,20 @@ class Main(object):
         self.erase = True
 
         # images for ships
-        self.glider = PhotoImage(file='1_ship.gif')
-        self.glider_in = PhotoImage(file='1_ship_in.gif')
-        self.lss = PhotoImage(file='2_lss.gif')
-        self.lss_in = PhotoImage(file='2_lss_in.gif')
-        self.sui = PhotoImage(file='3_sucide.gif')
-        self.sui_in = PhotoImage(file='3_sucide_in.gif')
-        self.f5 = PhotoImage(file='4_f5.gif')
-        self.f5_in = PhotoImage(file='4_f5_in.gif')
-        self.penta = PhotoImage(file='5_penta.gif')
-        self.penta_in = PhotoImage(file='5_penta_in.gif')
-        self.patern = PhotoImage(file='6_patern.gif')
-        self.patern_in = PhotoImage(file='6_patern_in.gif')
-        self.fireship = PhotoImage(file='7_fireship.gif')
-        self.fireship_in = PhotoImage(file='7_fireship_in.gif')
+        self.glider = PhotoImage(file='data/1_ship.gif')
+        self.glider_in = PhotoImage(file='data/1_ship_in.gif')
+        self.lss = PhotoImage(file='data/2_lss.gif')
+        self.lss_in = PhotoImage(file='data/2_lss_in.gif')
+        self.sui = PhotoImage(file='data/3_sucide.gif')
+        self.sui_in = PhotoImage(file='data/3_sucide_in.gif')
+        self.f5 = PhotoImage(file='data/4_f5.gif')
+        self.f5_in = PhotoImage(file='data/4_f5_in.gif')
+        self.penta = PhotoImage(file='data/5_penta.gif')
+        self.penta_in = PhotoImage(file='data/5_penta_in.gif')
+        self.patern = PhotoImage(file='data/6_patern.gif')
+        self.patern_in = PhotoImage(file='data/6_patern_in.gif')
+        self.fireship = PhotoImage(file='data/7_fireship.gif')
+        self.fireship_in = PhotoImage(file='data/7_fireship_in.gif')
 
         # GUI
         frameWin = Frame(master, bg='white', borderwidth=0)
@@ -223,8 +222,6 @@ class Main(object):
         xcell = event.y // self.cell
         ycell = event.x // self.cell
         self.black_cell(xcell, ycell)
-
-        print(self.window.find_withtag(CURRENT))
 
     def creatures(self, event):
         # I can realize with standart buttons and compound

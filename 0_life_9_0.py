@@ -29,14 +29,15 @@
 # dead born 0.26857924461364746
 # lifelogic 0.07352328300476074
 
+import time
 import shelve
-import numpy as np
+
 from math import hypot
+import numpy as np
 from string import ascii_lowercase
 from sys import exit as sysexit
 from sys import setcheckinterval
 
-import time
 import pygame
 from pygame import gfxdraw
 from pygame.locals import *
@@ -207,14 +208,16 @@ class GameLife(object):
 
         temp = np.zeros(gener.shape, dtype=np.int64)
         t = time.time()
-
+        U = 8
+        liv = liv.T
+        print(liv)
         # check first 8 coords
         for i in range(around.shape[1]):
             if gener.sum() == 0:
                 gener[0] = (liv[0] + around[0][i]) % wid
                 gener[1] = (liv[1] + around[1][i]) % hei
             else:
-                temp[0] = (liv[0] + around[0][i]) % wid
+                temp[0] = np.add.at(liv[0], + around[0][i]) % wid
                 temp[1] = (liv[1] + around[1][i]) % hei
 
                 gener = np.concatenate((gener, temp))
@@ -281,21 +284,21 @@ class GameLife(object):
         # main algoritm
         t = time.time()
 
-        # self.born, self.dead = self.check_live(list(self.live),
-        #                                        self.virt_mat,
-        #                                        self.born,
-        #                                        self.dead,
-        #                                        CELL_COLOR,
-        #                                        GAME_WID,
-        #                                        GAME_HEI)
+        self.born, self.dead = self.check_live(list(self.live),
+                                               self.virt_mat,
+                                               self.born,
+                                               self.dead,
+                                               CELL_COLOR,
+                                               GAME_WID,
+                                               GAME_HEI)
         # cythonize
-        self.born, self.dead = lifelogic_cyt_num.check_live(list(self.live),
-                                                            self.virt_mat,
-                                                            self.born,
-                                                            self.dead,
-                                                            CELL_COLOR,
-                                                            GAME_WID,
-                                                            GAME_HEI)
+        # self.born, self.dead = lifelogic_cyt_num.check_live(list(self.live),
+        #                                                     self.virt_mat,
+        #                                                     self.born,
+        #                                                     self.dead,
+        #                                                     CELL_COLOR,
+        #                                                     GAME_WID,
+        #                                                     GAME_HEI)
         print(len(self.born), len(self.dead), len(self.live))
 
         print('dead born', time.time() - t)

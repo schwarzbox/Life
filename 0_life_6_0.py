@@ -68,7 +68,7 @@ class Main(object):
         self.DISPLAY = pygame.display.set_mode((WID, HEI), 0, 32)
 
         # set up icon in taskbar
-        icon = pygame.image.load('icon.png')
+        icon = pygame.image.load('data/icon.png')
         pygame.display.set_icon(icon)
 
         pygame.display.set_caption('CONWAY\'S GAME OF LIFE')
@@ -86,7 +86,7 @@ class Main(object):
 
         # left menu
         # original images
-        self.all_gliders = [pygame.image.load(i) for i in glob('*.gif')]
+        self.all_gliders = [pygame.image.load(i) for i in glob('data/*.gif')]
 
         self.def_gliders = [self.all_gliders[i]
                             for i in range(0, len(self.all_gliders), 2)]

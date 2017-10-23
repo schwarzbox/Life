@@ -25,7 +25,6 @@ from sys import exit as sysexit
 
 
 import pygame
-from pygame import gfxdraw
 from pygame.locals import *
 
 
