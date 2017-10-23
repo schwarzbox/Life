@@ -5,27 +5,16 @@
 
 # 1.0 (2016 - 3 days to build, but I am only start to code!)
 # 3.0 (2017 - use signal flag to stop, many comments with old code)
-# 3.5 (2017 – erase all time, after_cancel improve speed, pep-8)
-# 4.0 (2017 – 4 px. very slow with fill pixels, after 200 epochs)
-# 4.5 (2017 – 1 px. improve painting and syntax, slow with 600 pixels)
-# 5.0 (2017 – 1 px, virtual matrix, slow 900 pix, del self.cell size)
+# 3.5 (2017 – always erase, after_cancel, improve speed, pep-8)
+# 4.0 (2017 – 4 px. very slow fill pixels, 200 cells)
+# 4.5 (2017 – 1 px. improve painting and syntax, 600 cells)
+# 5.0 (2017 – 1 px. virtual matrix, del self.cell=int, 900 cells)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
-# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame)
-
-# faster alg
-
-# add new model - made pixel editor and save models shippet
-# create matrix for gliders
-# editor of new glider
-
-# p.s.
-# add snippet ⌘+q for mouse get pos and mouse set pos and second mouse but
-# add icon change, alpha trasparency
-
-
-# evolution on/off
-
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+# 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
+# 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
+# 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
 import math
 import sys
@@ -47,7 +36,7 @@ BOTMEN_HEI = HEI - GAME_HEI
 GLIDEBORMARG = 6
 GLIDEPAD = 10
 
-YELLOW = (255, 55, 0)
+RED = (255, 55, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255, 200)
 GRAY = (208, 208, 208, 100)
@@ -56,7 +45,7 @@ DARKGRAY = (138, 138, 138)
 TXTCOL = BLACK
 BGCOL = WHITE
 GAME_COLOR = DARKGRAY
-CELL_COLOR = YELLOW
+CELL_COLOR = RED
 DEAD_COLOR = GRAY
 
 BORDER = GRAY
@@ -88,13 +77,17 @@ class Main(object):
 
         self.FONT_L = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
                                        26)
+        self.FONT_M = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
+                                       16)
         self.FONT_S = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
                                        13)
         # field for cells
         self.cell_matrix = pygame.Surface((GAME_WID, GAME_HEI))
 
-        self.all_gliders = [pygame.image.load(i) for i in glob('*.gif')]
         # left menu
+        # original images
+        self.all_gliders = [pygame.image.load(i) for i in glob('*.gif')]
+
         self.def_gliders = [self.all_gliders[i]
                             for i in range(0, len(self.all_gliders), 2)]
         self.inv_gliders = [self.all_gliders[i]
@@ -130,9 +123,6 @@ class Main(object):
 
         # main loop
         self.game()
-
-    def glider_matrix(self):
-        pass
 
     def made_bottom_menu(self):
         """ made blueprint for bottom menu """
@@ -393,23 +383,9 @@ class Main(object):
     def fill_black(self, coords, color, virt_color):
         x, y = coords
         self.virt_mat[x][y] = virt_color
-        # set at
-        # 4200 5 fps
-        # 1000 16 fps
 
-        # show evolution off
-        # if virt_color == 1:
-        # self.cell_matrix.set_at((x, y), color)
-
-        # show evolution on
+        # show evolution
         self.cell_matrix.set_at((x, y), color)
-
-        # pix array
-        # 4200 4 fps
-        # 1000 16 fps
-        # pixels = pygame.PixelArray(self.cell_matrix)
-        # pixels[x][y] = color
-        # del pixels
 
     def check_black(self, x, y, color):
         total = 8
@@ -513,15 +489,12 @@ class Main(object):
             game = self.make_input()
             # game code
             if game and self.start:
-                # show evolution off
-                # self.cell_matrix.fill(GAME_COLOR)
                 game = self.start_life()
 
             # move glider cursor and switch to default
             if self.cursor and self.cursor[3]:
                 pygame.mouse.set_visible(False)
-                # pygame.mouse.set_pos(self.cursor[1].centerx,
-                #                      self.cursor[1].centery)
+
                 self.cursor[1].midbottom = pygame.mouse.get_pos()
                 self.DISPLAY.blit(self.cursor[0], self.cursor[1])
             else:
@@ -565,11 +538,15 @@ class Main(object):
                       self.FONT_L, self.DISPLAY,
                       WID // 2, top, 'center',
                       fg=TXTCOL, bg=None)
-
-        info = [('LIFE EXIST', str(self.global_gen) + ' CYCLES'),
-                ('POPULATION',  str(self.score + self.start_cell) + ' CELLS'),
-                ('SEEDS', str(self.start_cell) + ' CELLS'),
-                ('MAXIMUM', str(self.max_score) + ' CELLS')]
+        c_st = 'CYCLE'.rjust(9) if self.global_gen == 1 else 'CYCLES'.rjust(8)
+        info = [('LIFE EXIST',
+                 str(self.global_gen) + c_st),
+                ('POPULATION',
+                 str(self.score + self.start_cell) + 'CELLS'.rjust(9)),
+                ('SEEDS',
+                 str(self.start_cell) + 'CELLS'.rjust(9)),
+                ('MAXIMUM',
+                 str(self.max_score) + 'CELLS'.rjust(9))]
 
         menu_rct = pygame.Rect(0, 0, xt, len(info) * (yt + pady))
         menu_rct.left = WID // 2 - xt // 2
@@ -590,7 +567,7 @@ class Main(object):
                           fg=TXTCOL, bg=None)
 
         self.make_txt('PRESS ANY KEY',
-                      self.FONT_S, self.DISPLAY,
+                      self.FONT_M, self.DISPLAY,
                       (WID // 2), menu_rct.bottom - pady, 'center',
                       fg=TXTCOL, bg=None)
 
@@ -675,13 +652,16 @@ class Main(object):
                     self.make_exit()
 
                 # exit game loop
-                if e.key == ord('e'):
+                if e.key == ord('q'):
                     return False
 
-            if e.type == KEYUP:
-                pass
+                if e.key == K_SPACE:
+                    self.start = not self.start
 
-            game_field = pygame.Rect(WID - GAME_WID, 0, WID, GAME_HEI)
+            game_field = self.cell_matrix.get_rect()
+            game_field.topright = (WID, 0)
+
+            ob = dict(**self.bottom_obj)
 
             if e.type == MOUSEBUTTONUP:
                 self.motion = False
@@ -690,9 +670,15 @@ class Main(object):
                 for i in self.bottom_obj:
                     self.button_off(self.bottom_obj[i])
 
+                    if self.start:
+                        if i == 'CLEAR' or i == 'START':
+                            ob[i]['fg'] = DISABLE
+                    else:
+                        ob[i]['fg'] = ENABLE
+
             if e.type == MOUSEBUTTONDOWN:
                 # menu
-                ob = dict(**self.bottom_obj)
+
                 for i in self.bottom_obj:
                     if ob[i]['framesize']:
                         colider = pygame.Rect(ob[i]['framesize'])
@@ -714,13 +700,6 @@ class Main(object):
                                 self.change_fps(self.fps - 5)
                                 self.button_on(ob[i])
 
-                for i in self.bottom_obj:
-                    if self.start:
-                        if i == 'CLEAR' or i == 'START':
-                            ob[i]['fg'] = DISABLE
-                    else:
-                        ob[i]['fg'] = ENABLE
-
                 for num, obj in enumerate(self.gliders_menu()):
                     colider = pygame.Rect(obj)
                     if colider.collidepoint(e.pos[0], e.pos[1]):
@@ -737,6 +716,7 @@ class Main(object):
                     if self.cursor and e.button == 1:
                         # run function with glider coords
                         self.glider_coords[self.cursor[2]](*mouse)
+
                     else:
                         self.start_paint(*mouse)
                     # delete ship by second button
@@ -751,11 +731,6 @@ class Main(object):
                         # var for show cursor
                         self.cursor[3] = True
                         self.motion = False
-
-                        self.cursor[1].move_ip(
-                            e.pos[0] - self.cursor[1].centerx,
-                            e.pos[1] - self.cursor[1].centery
-                        )
 
                     if self.motion:
                         self.motion_paint(*mouse)
