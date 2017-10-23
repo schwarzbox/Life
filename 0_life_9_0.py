@@ -419,7 +419,7 @@ class Main(object):
         pygame.mouse.set_visible(True)
 
         self.CLOCK = pygame.time.Clock()
-        self.DISPLAY = pygame.display.set_mode((WID, HEI), 32)
+        self.DISPLAY = pygame.display.set_mode((WID, HEI), 0, 32)
 
         # set up icon in taskbar
         icon = self.create_game_icon()
