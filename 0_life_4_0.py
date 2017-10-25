@@ -11,9 +11,9 @@
 # 5.0 (2017 – 1 px. virtual matrix, del self.cell=int, 900 cells)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
-# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 9000 cells 4 fps)
 # 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
-# 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
+# 8.0 (2017 - 1 px. cython 30000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
 from tkinter import (BOTH, BOTTOM, Button, CENTER, Canvas, Frame, LEFT, Label,

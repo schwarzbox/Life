@@ -11,14 +11,18 @@
 # 5.0 (2017 – 1 px. virtual matrix, del self.cell=int, 900 cells)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
-# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 9000 cells 4 fps)
 # 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
-# 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
+# 8.0 (2017 - 1 px. cython 30000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
+
+# no evolution
+# no virt_matrix
+# on/off clean screen
 
 import math
 import sys
-
+from itertools import chain, product
 from glob import glob
 
 import pygame
@@ -46,7 +50,6 @@ TXTCOL = BLACK
 BGCOL = WHITE
 GAME_COLOR = DARKGRAY
 CELL_COLOR = RED
-DEAD_COLOR = GRAY
 
 BORDER = GRAY
 ENABLE = TXTCOL
@@ -97,9 +100,6 @@ class Main(object):
                         self.fig_3, self.fig_4, self.ship_3)
         self.glider_coords = {i: gliders_func[i]
                               for i in range(len(self.def_gliders))}
-
-        # create virtual map make it strange way because old bug from 1.0
-        self.virt_mat = [[0] * GAME_HEI for i in range(GAME_WID)]
 
         self.fps = FPS
 
@@ -364,90 +364,92 @@ class Main(object):
         x = x % GAME_WID
         y = y % GAME_HEI
 
-        if self.virt_mat[x][y] == 0:
-            self.virt_mat[x][y] = 1
+        if (x, y) not in self.live:
 
-            self.fill_black((x, y), CELL_COLOR, 1)
+            self.fill_black((x, y), CELL_COLOR)
 
             self.start_cell += 1
             self.live.add((x, y))
         else:
             if self.erase:
-                if self.virt_mat[x][y] == 1:
+                if (x, y) in self.live:
 
-                    self.fill_black((x, y), GAME_COLOR, 0)
+                    self.fill_black((x, y), GAME_COLOR)
 
                     self.start_cell -= 1
                     self.live.remove((x, y))
 
-    def fill_black(self, coords, color, virt_color):
+    def fill_black(self, coords, color):
         x, y = coords
-        self.virt_mat[x][y] = virt_color
 
         # show evolution
         self.cell_matrix.set_at((x, y), color)
 
-    def check_black(self, x, y, color):
-        total = 8
-        for i in [(-1, -1), (0, -1),
-                  (1, -1), (-1, 0),
-                  (1, 0), (-1, 1),
-                  (0, 1), (1, 1)]:
+    def check_black(self, x, y, live, wid, hei):
+        tot = 0
+        around = (((-1 + x) % wid, (-1 + y) % hei),
+                  ((0 + x) % wid, (-1 + y) % hei),
+                  ((1 + x) % wid, (-1 + y) % hei),
+                  ((-1 + x) % wid, y % hei),
+                  ((1 + x) % wid, y % hei),
+                  ((-1 + x) % wid, (1 + y) % hei),
+                  ((0 + x) % wid, (1 + y) % hei),
+                  ((1 + x) % wid, (1 + y) % hei))
 
-            xi = (x + i[0]) % GAME_WID
-            yi = (y + i[1]) % GAME_HEI
+        for i in range(8):
+            x, y = around[i]
+            if (x, y) in live:
+                tot += 1
+            if tot == 4:
+                return tot
 
-            if self.virt_mat[xi][yi] == color:
-                total -= 1
+        return tot
 
-        return total
+    def find_cells(self, cell):
+        x, y = cell
 
-    def check_live(self, coords):
-        i, j = coords
+        for i, j in product(range(-1, 2), repeat=2):
+            if any((i, j)):
+                yield ((x + i, y + j))
 
-        total = self.check_black(i, j, 0)
+    def check_live(self, live, wid, hei):
+        new_live = set()
+        born_app = new_live.add
 
-        if total < 2:
-            self.dead.append((i, j))
+        # clean live
+        fut_live = list(live | set(chain(*map(self.find_cells, live))))
 
-        if total > 3:
-            self.dead.append((i, j))
+        for cell_num in range(len(fut_live)):
+            xx, yy = fut_live[cell_num]
 
-        # check if new cell wass born
-        for xy in [(i - 1, j - 1), (i, j - 1),
-                   (i + 1, j - 1), (i - 1, j),
-                   (i + 1, j), (i - 1, j + 1),
-                   (i, j + 1), (i + 1, j + 1)]:
+            # slow
+            # total = sum([((i[0] % wid, i[1] % hei) in live)
+            #              for i in self.find_cells((xx, yy))])
+            total = self.check_black(xx, yy, live, wid, hei)
 
-            total = self.check_black(xy[0], xy[1], 1)
+            if total == 3 or (total == 2 and (xx, yy) in live):
+                xx = xx % wid
+                yy = yy % hei
+                born_app((xx, yy))
 
-            # invert rule need 3 cells to born new
-            if total == 5:
-                xy0 = xy[0] % GAME_WID
-                xy1 = xy[1] % GAME_HEI
-                self.born.append((xy0, xy1))
+        return new_live
 
     def start_life(self):
         # for generation
         self.global_gen += 1
 
         tot = len(self.live)
-        # clean
-        self.born = []
-        self.dead = []
-
-        [self.check_live(i) for i in self.live]
 
         # update screen counters
         self.update_counters(self.global_gen, tot)
 
-        for i in self.dead:
-            self.live.remove(i)
-            self.fill_black(i, DEAD_COLOR, 0)
+        # check coords
+        self.live = self.check_live(self.live, GAME_WID, GAME_HEI)
 
-        for i in self.born:
-            self.live.add(i)
-            self.fill_black(i, CELL_COLOR, 1)
+        # clean field for next iteration with live cells
+
+        for i in self.live:
+            self.fill_black(i, CELL_COLOR)
 
         # counters for maximum population
         if not self.max_score:
@@ -458,7 +460,7 @@ class Main(object):
             self.max_score = self.max_score
 
         # after dead cells need to check how many stay alive
-        tot += len(self.born) - len(self.dead)
+        tot = len(self.live)
         # count population
         self.score += tot
 
@@ -480,6 +482,7 @@ class Main(object):
             place = self.cell_matrix.get_rect()
             place.topright = (WID, 0)
             self.DISPLAY.blit(self.cell_matrix, place)
+
             # menu
             self.bottom_menu()
 
@@ -489,6 +492,8 @@ class Main(object):
             game = self.make_input()
             # game code
             if game and self.start:
+                # clean screen
+                # self.cell_matrix.fill(GAME_COLOR)
                 game = self.start_life()
 
             # move glider cursor and switch to default
@@ -508,6 +513,8 @@ class Main(object):
                 self.bottom_obj['FPS']['text'] = str(real_fps)
 
     def end_game(self):
+        pygame.mouse.set_visible(True)
+        pygame.mouse.set_cursor(*pygame.cursors.arrow)
 
         self.create_fin_info()
 
@@ -574,9 +581,6 @@ class Main(object):
     def clear(self):
         # clear board
         self.cell_matrix.fill(GAME_COLOR)
-        # clear virtual board
-        self.virt_mat = [[0] * GAME_HEI
-                         for i in range(GAME_WID)]
 
         self.del_cursor()
 

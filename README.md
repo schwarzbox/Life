@@ -4,11 +4,11 @@ Conway's Game of Life
 
 1.0 (2016 - 3 days to build, but I am only start to code)
 
-3.0 (2017 - use signal flag to stop, many comments with old code)
+3.0 (2017 - use bool flag to stop, many comments with old code)
 
 3.5 (2017 – always erase, after_cancel, improve speed, pep-8)
 
-4.0 (2017 – 4 px. very slow fill pixels, 200 cells)
+4.0 (2017 – 4 px. slow fill pixels, 200 cells)
 
 4.5 (2017 – 1 px. improve painting and syntax, 600 cells)
 
@@ -18,7 +18,7 @@ Conway's Game of Life
 
 5.2 (2017 - 1 px. thread pool executor, same perfomans)
 
-6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 9000 cells 4 fps)
 
 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
 

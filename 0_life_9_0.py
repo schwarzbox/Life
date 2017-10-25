@@ -11,9 +11,9 @@
 # 5.0 (2017 – 1 px. virtual matrix, del self.cell=int, 900 cells)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
-# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 9000 cells 4 fps)
 # 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
-# 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
+# 8.0 (2017 - 1 px. cython 30000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
 # evolution
@@ -32,8 +32,9 @@
 import time
 import shelve
 
-from math import hypot
 import numpy as np
+from itertools import chain, product
+from math import hypot
 from string import ascii_lowercase
 from sys import exit as sysexit
 from sys import setcheckinterval
@@ -208,16 +209,14 @@ class GameLife(object):
 
         temp = np.zeros(gener.shape, dtype=np.int64)
         t = time.time()
-        U = 8
-        liv = liv.T
-        print(liv)
+
         # check first 8 coords
         for i in range(around.shape[1]):
             if gener.sum() == 0:
                 gener[0] = (liv[0] + around[0][i]) % wid
                 gener[1] = (liv[1] + around[1][i]) % hei
             else:
-                temp[0] = np.add.at(liv[0], + around[0][i]) % wid
+                temp[0] = (liv[0] + around[0][i]) % wid
                 temp[1] = (liv[1] + around[1][i]) % hei
 
                 gener = np.concatenate((gener, temp))
@@ -234,11 +233,17 @@ class GameLife(object):
 
         return gener, total
 
+    def find_cells(self, cell):
+        x, y = cell
+
+        for i, j in product(range(-1, 2), repeat=2):
+            if any((i, j)):
+                yield (x + i, y + j)
+
     def check_live(self, live, matrix, make_born,
                    make_dead, cellclr, wid, hei):
-
         if live:
-            liv = np.array(live, dtype=np.int64).T
+            liv = np.array(list(live), dtype=np.int64).T
 
             gener, total = self.check_black(liv, matrix, cellclr,
                                             AROUND, wid, hei)
@@ -253,11 +258,14 @@ class GameLife(object):
 
             make_dead = np.concatenate((make_dead2, make_dead3))
 
+            # filt_gener = list(live ^ set(map(tuple, gener.T.tolist())))
+            # filt_gener = np.array(filt_gener, dtype=np.int64).T
+            filt_gener = gener
             # select born in 8 * len(liv)
-            born, total = self.check_black(gener, matrix, cellclr,
+            born, total = self.check_black(filt_gener, matrix, cellclr,
                                            AROUND, wid, hei)
             tot3 = (total == 3)
-            make_born = gener.T[tot3]
+            make_born = filt_gener.T[tot3]
 
             # find duplicates
             # lex sort
@@ -267,7 +275,7 @@ class GameLife(object):
                 row_mask = np.append([True], np.any(np.diff(sorted_data,
                                                             axis=0), 1))
                 make_born = sorted_data[row_mask]
-            print('all', len(born[1]) + len(gener[1]))
+            print('all', len(born[1]) + len(filt_gener[1]))
 
         return make_born, make_dead
 
@@ -284,7 +292,7 @@ class GameLife(object):
         # main algoritm
         t = time.time()
 
-        self.born, self.dead = self.check_live(list(self.live),
+        self.born, self.dead = self.check_live(self.live,
                                                self.virt_mat,
                                                self.born,
                                                self.dead,

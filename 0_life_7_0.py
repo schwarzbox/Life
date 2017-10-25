@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # LIFE 7.0
@@ -11,15 +10,16 @@
 # 5.0 (2017 – 1 px. virtual matrix, del self.cell=int, 900 cells)
 # 5.1 (2017 – 1 px. virtual matrix, total update very slow)
 # 5.2 (2017 - 1 px. thread pool executor, same perfomans)
-# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 5000 cells 4 fps)
+# 6.0 (2017 - 1 px. use pygame, made simple GUI by pygame, 9000 cells 4 fps)
 # 7.0 (2017 - 1 px. no img, add editor, dark theme, class glider, users data)
-# 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
+# 8.0 (2017 - 1 px. cython 30000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
-# evolution
+# no cython
 
 import shelve
 import string
+from itertools import chain, product
 from math import hypot
 from sys import exit as sysexit
 
@@ -166,7 +166,7 @@ class GameLife(object):
         self.main.cell_matrix.set_at((x, y), color)
 
     def check_black(self, x, y, clr, mat, wid, hei):
-        tot = 8
+        tot = 0
         around = (((-1 + x) % wid, (-1 + y) % hei),
                   ((0 + x) % wid, (-1 + y) % hei),
                   ((1 + x) % wid, (-1 + y) % hei),
@@ -176,62 +176,55 @@ class GameLife(object):
                   ((0 + x) % wid, (1 + y) % hei),
                   ((1 + x) % wid, (1 + y) % hei))
 
-        for i in range(tot):
+        for i in range(8):
             x, y = around[i]
             if mat[x][y] == clr:
-                tot -= 1
-            if tot < 2:
+                tot += 1
+            if tot == 4:
                 return tot
 
         return tot
+
+    def find_cells(self, cell):
+        x, y = cell
+
+        for i, j in product(range(-1, 2), repeat=2):
+            if any((i, j)):
+                yield (x + i, y + j)
 
     def check_live(self, live, born, dead, matrix, wid, hei):
         dead_app = dead.append
         born_app = born.append
         check_black = self.check_black
-        live = list(live)
-        for cell_num in range(len(live)):
 
-            i, j = live[cell_num]
-            total = check_black(i, j, 0, matrix, wid, hei)
-            if total < 2:
-                dead_app((i, j))
+        # clean live
+        fut_live = list(live | set(chain(*map(self.find_cells, live))))
 
-            if total > 3:
-                dead_app((i, j))
+        for cell_num in range(len(fut_live)):
+            xx, yy = fut_live[cell_num]
 
-            # check if new cell was born
-            around = ((i - 1, j - 1), (i, j - 1),
-                      (i + 1, j - 1), (i - 1, j),
-                      (i + 1, j), (i - 1, j + 1),
-                      (i, j + 1), (i + 1, j + 1))
+            total = check_black(xx, yy, 1, matrix, wid, hei)
 
-            for ind in range(8):
-                xy0, xy1 = around[ind]
-                total = check_black(xy0, xy1, 0, matrix, wid, hei)
+            if total == 3:
+                xx = xx % wid
+                yy = yy % hei
+                born_app((xx, yy))
 
-                # invert rule need 3 cells to born new
-                if total == 3:
-                    xy0 = xy0 % wid
-                    xy1 = xy1 % hei
-                    born_app((xy0, xy1))
+            if (total < 2 or total > 3) and (xx, yy) in live:
+                dead_app((xx, yy))
 
         return born, dead
 
     def start_life(self):
         # for generation
         self.epoh += 1
-
         total_cells_on_screen = len(self.live)
         # update screen counters
         self.main.update_counters(self.epoh, total_cells_on_screen)
 
-        # clean
         self.born = []
         self.dead = []
-
         # check coords
-        # local lists faster than global
         self.born, self.dead = self.check_live(self.live,
                                                self.born,
                                                self.dead,
@@ -247,6 +240,7 @@ class GameLife(object):
             self.fill_black(i, DEAD_COLOR, 0)
 
         for i in self.born:
+
             live_add(i)
             self.fill_black(i, CELL_COLOR, 1)
 
@@ -259,7 +253,8 @@ class GameLife(object):
             self.max_score = self.max_score
 
         # after dead cells need to check how many stay alive
-        total_cells_on_screen += len(self.born) - len(self.dead)
+        total_cells_on_screen = len(self.live)
+
         # count population
         self.score += total_cells_on_screen
 
@@ -824,6 +819,9 @@ class Main(object):
             self.CLOCK.tick(self.fps)
 
     def end_game(self):
+        pygame.mouse.set_visible(True)
+        pygame.mouse.set_cursor(*pygame.cursors.arrow)
+
         self.fin_m_obj, self.fin_m_rct, self.fin_m_str = self.make_fin_info()
         self.clear()
         end_loop = True
