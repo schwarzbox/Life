@@ -24,7 +24,7 @@ Conway's Game of Life
 
 8.0 (2017 - 1 px. cython 26000 cells 4 fps)
 
-9.0beta (2017 - 1 px. numpy 22000 cells 4 fps)
+9.0 beta (2017 - 1 px. numpy 22000 cells 4 fps)
 
 ![Screenshot](screenshot/screenshot1.jpg)
 ![Screenshot](screenshot/screenshot2.jpg)

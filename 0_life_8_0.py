@@ -1,7 +1,34 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# LIFE 8.0
+"""
+LIFE
+"""
+__version__ = 8.0
+
+# 0_life_8_0.py
+
+# MIT License
+# Copyright (c) 2017 Alexander Veledzimovich veledz@gmail.com
+
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+
 
 # 1.0 (2016 - 3 days to build, but I am only start to code!)
 # 3.0 (2017 - use signal flag to stop, many comments with old code)
@@ -16,6 +43,7 @@
 # 8.0 (2017 - 1 px. cython 30000 cells 4 fps)
 # 9.0 (2017 - 1 px. numpy 22000 cells 4 fps)
 
+# add DISPLAY.set_alpha(0, pygame.RLEACCEL)
 # evolution
 
 import shelve
@@ -321,6 +349,7 @@ class Main(object):
 
         self.CLOCK = pygame.time.Clock()
         self.DISPLAY = pygame.display.set_mode((WID, HEI), 0, 32)
+        self.DISPLAY.set_alpha(0, pygame.RLEACCEL)
 
         # set up icon in taskbar
         icon = self.create_game_icon()
@@ -1583,4 +1612,7 @@ class Main(object):
 
 
 if __name__ == '__main__':
+    print(__version__)
+    print(__doc__)
+    print(__file__)
     Main()
