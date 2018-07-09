@@ -27,7 +27,12 @@ class Main(object):
     def __init__(self, master):
         self.master = master
         self.master.title('CONWAY\'S GAME OF LIFE')
-        self.master.geometry('910x680+200+50')
+        self.wid = 910
+        self.hei = 680
+        smw = self.master.winfo_screenwidth() // 2
+        smh = self.master.winfo_screenheight() // 2
+        tplft = (smw - self.wid // 2, smh - self.hei // 2)
+        self.master.geometry(f'{self.wid}x{self.hei}+{tplft[0]}+{tplft[1]}')
         self.master.resizable(width=False, height=False)
 
         # create a main field
@@ -631,13 +636,16 @@ class End(object):
         self.end.transient(master)
         self.end.title('THE END')
 
+        self.wid = 200
+        self.hei = 170
         x = master.winfo_x()
         y = master.winfo_y()
-        w_mid = master.winfo_width() // 2
-        h_mid = master.winfo_height() // 2
-        self.end.geometry(
-            '200x170+{}+{}'.format(x + w_mid - 100, y + h_mid - 85))
-        self.end.resizable(width=False, height=False)
+        smw = master.winfo_width() // 2
+        smh = master.winfo_height() // 2
+        tplft = (x + smw - self.wid // 2, y + smh - self.hei // 2)
+        self.end.geometry(f'{self.wid}x{self.hei}+{tplft[0]}+{tplft[1]}')
+        # self.end.resizable(width=False, height=False)
+        self.end.overrideredirect(True)
 
         self.end.gen = str(gen - 1)
         self.end.start = str(start_cell)
@@ -678,8 +686,6 @@ class End(object):
                               width=7,
                               command=self.new_life)
         self.end.new.pack(side=LEFT, padx=5)
-
-        self.end.overrideredirect(True)
 
     def answer(self):
         # to prevent error when close main window

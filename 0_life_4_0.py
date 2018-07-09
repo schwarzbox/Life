@@ -26,7 +26,12 @@ class Main(object):
     def __init__(self, master):
         self.master = master
         self.master.title('CONWAY\'S GAME OF LIFE')
-        self.master.geometry('910x680+200+50')
+        self.wid = 910
+        self.hei = 680
+        smw = self.master.winfo_screenwidth() // 2
+        smh = self.master.winfo_screenheight() // 2
+        tplft = (smw - self.wid // 2, smh - self.hei // 2)
+        self.master.geometry(f'{self.wid}x{self.hei}+{tplft[0]}+{tplft[1]}')
         self.master.resizable(width=False, height=False)
 
         # create a main field
@@ -91,7 +96,7 @@ class Main(object):
 
         self.w_field = self.can_width // self.cell
         self.h_field = self.can_height // self.cell
-
+        print(self.w_field, self.h_field)
         self.cell_matrix = PhotoImage(width=self.can_width,
                                       height=self.can_height)
         hor_line = '{' + ' '.join(['#EEEEEE'] * self.can_width) + '}'
@@ -110,7 +115,7 @@ class Main(object):
                           height=2, bg='white')
         mes_creat.pack(side=TOP, fill=X)
 
-        frameCreat = Frame(frameBorderCr, bg='gray', bd=2)
+        frameCreat = Frame(frameBorderCr, bg='#CCCCCC', bd=2)
         frameCreat.pack(side=TOP, fill=BOTH)
 
         self.creat = Canvas(frameCreat,
@@ -137,7 +142,7 @@ class Main(object):
         message.pack(side=LEFT, fill=X)
 
         # cell part
-        frameBor1 = Frame(frameMB, bg='gray', borderwidth=2)
+        frameBor1 = Frame(frameMB, bg='#CCCCCC', borderwidth=2)
         frameBor1.pack(side=LEFT)
         name_pop = Label(frameBor1, text='CELL')
         name_pop.pack(side=LEFT)
@@ -149,7 +154,7 @@ class Main(object):
         sep.pack(side=LEFT)
 
         # cycle part
-        frameBor2 = Frame(frameMB, bg='gray', borderwidth=2)
+        frameBor2 = Frame(frameMB, bg='#CCCCCC', borderwidth=2)
         frameBor2.pack(side=LEFT)
         name_gen = Label(frameBor2, text='CYCLE')
         name_gen.pack(side=LEFT)
@@ -185,7 +190,7 @@ class Main(object):
                              command=self.fast)
         button_Fast.pack(side=RIGHT, padx=3)
 
-        butSpeedFrame = Frame(blockSpeed, bg='gray', bd=2)
+        butSpeedFrame = Frame(blockSpeed, bg='#CCCCCC', bd=2)
         butSpeedFrame.pack(side=RIGHT)
 
         self.speedVal = Label(butSpeedFrame, text=int(self.timer), width=3)
@@ -439,14 +444,14 @@ class Main(object):
         x = x * self.cell + self.cell // 2
         y = y * self.cell + self.cell // 2
 
-        if self.cell_matrix.get(x, y) == '238 238 238':
+        if self.cell_matrix.get(x, y) == (238, 238, 238):
             self.fill_black(x, y, '#000000')
 
             self.start_cell += 1
             self.live.add((x, y))
         else:
             if self.erase:
-                if self.cell_matrix.get(x, y) == '0 0 0':
+                if self.cell_matrix.get(x, y) == (0, 0, 0):
                     self.fill_black(x, y, '#EEEEEE')
 
                     self.start_cell -= 1
@@ -494,7 +499,7 @@ class Main(object):
 
         for i, j in self.live:
 
-            total = self.check_black(i, j, '238 238 238')
+            total = self.check_black(i, j, (238, 238, 238))
 
             if total < 2:
                 self.dead.append((i, j))
@@ -508,7 +513,7 @@ class Main(object):
                        (i + self.cell, j), (i - self.cell, j + self.cell),
                        (i, j + self.cell), (i + self.cell, j + self.cell)]:
 
-                total = self.check_black(xy[0], xy[1], '0 0 0')
+                total = self.check_black(xy[0], xy[1], (0, 0, 0))
 
             # invert rule need 3 cells to born new
                 if total == 5:
@@ -629,13 +634,16 @@ class End(object):
         self.end.transient(master)
         self.end.title('THE END')
 
+        self.wid = 200
+        self.hei = 170
         x = master.winfo_x()
         y = master.winfo_y()
-        w_mid = master.winfo_width() // 2
-        h_mid = master.winfo_height() // 2
-        self.end.geometry(
-            '200x170+{}+{}'.format(x + w_mid - 100, y + h_mid - 85))
-        self.end.resizable(width=False, height=False)
+        smw = master.winfo_width() // 2
+        smh = master.winfo_height() // 2
+        tplft = (x + smw - self.wid // 2, y + smh - self.hei // 2)
+        self.end.geometry(f'{self.wid}x{self.hei}+{tplft[0]}+{tplft[1]}')
+        # self.end.resizable(width=False, height=False)
+        self.end.overrideredirect(True)
 
         self.end.gen = str(gen - 1)
         self.end.start = str(start_cell)
@@ -676,8 +684,6 @@ class End(object):
                               width=7,
                               command=self.new_life)
         self.end.new.pack(side=LEFT, padx=5)
-
-        self.end.overrideredirect(True)
 
     def answer(self):
         # to prevent error when close main window

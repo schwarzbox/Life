@@ -62,7 +62,7 @@ from itertools import chain, product
 from math import hypot
 from string import ascii_lowercase
 from sys import exit as sysexit
-from sys import setcheckinterval
+from sys import setswitchinterval
 
 import pygame
 from pygame import gfxdraw
@@ -70,8 +70,7 @@ from pygame.locals import *
 
 import lifelogic_cyt_num
 
-
-setcheckinterval(300)
+setswitchinterval(300)
 
 WID = 940
 HEI = 834
