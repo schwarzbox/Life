@@ -1,6 +1,6 @@
 # LifeConway-Python3
 
-Scripts Conway's Game of Life
+Conway's Game of Life
 
 1.0 (2016 - 3 days to build, but I am only start to code)
 
