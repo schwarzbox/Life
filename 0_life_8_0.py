@@ -348,7 +348,7 @@ class Main(object):
         pygame.mouse.set_visible(True)
 
         self.CLOCK = pygame.time.Clock()
-        self.DISPLAY = pygame.display.set_mode((WID, HEI), 0, 32)
+        self.DISPLAY = pygame.display.set_mode((WID, HEI), FULLSCREEN, 32)
         self.DISPLAY.set_alpha(0, pygame.RLEACCEL)
 
         # set up icon in taskbar
