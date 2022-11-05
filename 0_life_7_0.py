@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # LIFE 7.0
@@ -33,9 +34,9 @@ HEI = 834
 
 pygame.init()
 
-FONT_L = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 26)
-FONT_M = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 18)
-FONT_S = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 13)
+FONT_L = pygame.font.Font('SFNSMono.ttf', 26)
+FONT_M = pygame.font.Font('SFNSMono.ttf', 18)
+FONT_S = pygame.font.Font('SFNSMono.ttf', 13)
 
 BIGCELL = 8
 SMALLCELL = 1

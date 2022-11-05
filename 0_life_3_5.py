@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # LIFE 3.5
@@ -94,7 +94,7 @@ class Main(object):
                              highlightthickness=0)
         self.window.pack(side=TOP)
 
-        self.cell = 10
+        self.cell = 4
         self.w_field = can_width // self.cell
         self.h_field = can_height // self.cell
 

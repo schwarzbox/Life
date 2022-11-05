@@ -77,9 +77,9 @@ HEI = 834
 
 pygame.init()
 
-FONT_L = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 26)
-FONT_M = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 18)
-FONT_S = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 13)
+FONT_L = pygame.font.Font('SFNSMono.ttf', 26)
+FONT_M = pygame.font.Font('SFNSMono.ttf', 18)
+FONT_S = pygame.font.Font('SFNSMono.ttf', 13)
 
 BIGCELL = 8
 SMALLCELL = 1
@@ -1691,8 +1691,8 @@ class Main(object):
 
     def make_anchor(self, rect, x, y, anchor):
         if anchor == 'center':
-            rect.centerx = x
-            rect.centery = y
+            rect.centerx = int(x)
+            rect.centery = int(y)
         elif anchor == 'n':
             rect.midtop = (x, y)
         elif anchor == 's':

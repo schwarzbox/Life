@@ -71,25 +71,26 @@ class Main(object):
         self.DISPLAY = pygame.display.set_mode((WID, HEI), 0, 32)
 
         # set up icon in taskbar
-        icon = pygame.image.load('data/icon.png')
+        icon = pygame.image.load('data/life.png')
         pygame.display.set_icon(icon)
 
         pygame.display.set_caption('CONWAY\'S GAME OF LIFE')
 
         pygame.mouse.set_visible(True)
 
-        self.FONT_L = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
-                                       26)
-        self.FONT_M = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
-                                       16)
-        self.FONT_S = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf',
-                                       13)
+        self.FONT_L = pygame.font.Font('SFNSMono.ttf', 26)
+        self.FONT_M = pygame.font.Font('SFNSMono.ttf', 16)
+        self.FONT_S = pygame.font.Font('SFNSMono.ttf', 13)
         # field for cells
         self.cell_matrix = pygame.Surface((GAME_WID, GAME_HEI))
 
         # left menu
         # original images
-        self.all_gliders = [pygame.image.load(i) for i in glob('data/*.gif')]
+
+        all_gliders = [i for i in glob('data/*.gif')]
+        all_gliders.sort()
+
+        self.all_gliders = [pygame.image.load(i) for i in all_gliders]
 
         self.def_gliders = [self.all_gliders[i]
                             for i in range(0, len(self.all_gliders), 2)]

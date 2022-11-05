@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -65,9 +65,9 @@ HEI = 834
 
 pygame.init()
 
-FONT_L = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 26)
-FONT_M = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 18)
-FONT_S = pygame.font.Font('/System/Library/Fonts/SFNSText.ttf', 13)
+FONT_L = pygame.font.Font('SFNSMono.ttf', 26)
+FONT_M = pygame.font.Font('SFNSMono.ttf', 18)
+FONT_S = pygame.font.Font('SFNSMono.ttf', 13)
 
 BIGCELL = 8
 SMALLCELL = 1
@@ -348,7 +348,7 @@ class Main(object):
         pygame.mouse.set_visible(True)
 
         self.CLOCK = pygame.time.Clock()
-        self.DISPLAY = pygame.display.set_mode((WID, HEI), FULLSCREEN, 32)
+        self.DISPLAY = pygame.display.set_mode((WID, HEI), False, 32)
         self.DISPLAY.set_alpha(0, pygame.RLEACCEL)
 
         # set up icon in taskbar
@@ -1580,8 +1580,8 @@ class Main(object):
 
     def make_anchor(self, rect, x, y, anchor):
         if anchor == 'center':
-            rect.centerx = x
-            rect.centery = y
+            rect.centerx = int(x)
+            rect.centery = int(y)
         elif anchor == 'n':
             rect.midtop = (x, y)
         elif anchor == 's':
